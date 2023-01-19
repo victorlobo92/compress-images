@@ -2,7 +2,7 @@
     "name": "victorlobo92/compress-images",
     "description": "Compress your images without losing quality",
     "minimum-stability": "stable",
-    "version": "0.0.1",
+    "version": "0.0.2",
     "homepage": "https://github.com/victorlobo92/compress-images",
     "license": "MIT",
     "type": "library",
@@ -16,5 +16,10 @@
             "homepage": "https://linkedin.com/in/victorloobo",
             "role": "Developer"
         }
-    ]
+    ],
+    "autoload": {
+        "classmap": [
+            "src"
+        ]
+    }
 }
