@@ -119,4 +119,19 @@ class SearchFilesTest extends TestCase
 
         $this->assertNull($exception, 'An exception was thrown.');
     }
+
+    /**
+     * Test if files in directory matches the array list count
+     *
+     * @return void
+     */
+    public function test_match_files_found_to_compress()
+    {
+        putenv("SEARCH_FILES_FOLDER=tests/compress");
+
+        $searchFiles = new SearchFiles();
+        $files_list = $searchFiles->find();
+
+        $this->assertCount(2, $files_list);
+    }
 }
