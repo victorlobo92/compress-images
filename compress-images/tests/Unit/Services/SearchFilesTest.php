@@ -2,7 +2,8 @@
 
 namespace Tests\Unit\Services;
 
-use PHPUnit\Framework\TestCase;
+use App\Exceptions\MissingEnvironmentVariableException;
+use Tests\TestCase;
 use App\Services\SearchFiles;
 
 class SearchFilesTest extends TestCase
@@ -23,7 +24,7 @@ class SearchFilesTest extends TestCase
      */
     public function test_missing_search_files_folder_env()
     {
-        $this->expectException(\Exception::class);
+        $this->expectException(MissingEnvironmentVariableException::class);
 
         putenv("SEARCH_FILES_FOLDER=");
 
@@ -37,7 +38,7 @@ class SearchFilesTest extends TestCase
      */
     public function test_missing_compressed_files_folder_env()
     {
-        $this->expectException(\Exception::class);
+        $this->expectException(MissingEnvironmentVariableException::class);
 
         putenv("COMPRESSED_FILES_FOLDER=");
         
