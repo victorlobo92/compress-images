@@ -7,6 +7,7 @@ use App\Exceptions\FileOrFolderNotFoundException;
 use App\Exceptions\MissingEnvironmentVariableException;
 use Tests\TestCase;
 use App\Services\SearchFiles;
+use Exception;
 
 class SearchFilesTest extends TestCase
 {
@@ -101,5 +102,21 @@ class SearchFilesTest extends TestCase
         putenv("COMPRESSED_FILES_FOLDER=tests/compress/unaccessable");
 
         new SearchFiles();
+    }
+
+    /**
+     * Test if SEARCH_FILES_FOLDER directory exists
+     *
+     * @return void
+     */
+    public function test_setup_works()
+    {
+        $exception = null;
+        
+        try {
+            new SearchFiles();
+        } catch (Exception $exception) {}
+
+        $this->assertNull($exception, 'An exception was thrown.');
     }
 }
