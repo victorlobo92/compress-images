@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Exceptions\AccessRightsException;
 use App\Exceptions\FileOrFolderNotFoundException;
 use App\Exceptions\MissingEnvironmentVariableException;
 class SearchFiles {
@@ -39,7 +40,7 @@ class SearchFiles {
     {
         $this->validate_environment_variables();
         $this->validate_folders_exist();
-        $this->validateEnvironmentVariables();
+        $this->validate_folders_access_rights();
     }
 
     private function validate_environment_variables()
@@ -61,6 +62,17 @@ class SearchFiles {
 
         if(!is_dir($this->get_compressed_files_folder())) {
             throw new FileOrFolderNotFoundException('The folder ' . $this->get_compressed_files_folder() . ' was not found!');
+        }
+    }
+
+    private function validate_folders_access_rights()
+    {
+        if(!is_readable($this->get_search_files_folder())) {
+            throw new AccessRightsException('The application does not have reading access rights to ' . $this->get_search_files_folder() . ' folder!');
+        }
+
+        if(!is_writable($this->get_compressed_files_folder())) {
+            throw new AccessRightsException('The application does not have writing access rights to ' . $this->get_compressed_files_folder() . ' folder!');
         }
     }
 }

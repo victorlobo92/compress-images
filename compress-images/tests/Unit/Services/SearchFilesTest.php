@@ -2,6 +2,7 @@
 
 namespace Tests\Unit\Services;
 
+use App\Exceptions\AccessRightsException;
 use App\Exceptions\FileOrFolderNotFoundException;
 use App\Exceptions\MissingEnvironmentVariableException;
 use Tests\TestCase;
@@ -71,6 +72,34 @@ class SearchFilesTest extends TestCase
 
         putenv("COMPRESSED_FILES_FOLDER=fake_folder");
         
+        new SearchFiles();
+    }
+
+    /**
+     * Test if application has SEARCH_FILES_FOLDER reading access rights
+     *
+     * @return void
+     */
+    public function test_reading_access_rights_to_search_folder()
+    {
+        $this->expectException(AccessRightsException::class);
+
+        putenv("SEARCH_FILES_FOLDER=tests/compress/unaccessable");
+
+        new SearchFiles();
+    }
+
+    /**
+     * Test if application has COMPRESSED_FILES_FOLDER writing access rights
+     *
+     * @return void
+     */
+    public function test_writing_access_rights_to_compressed_folder()
+    {
+        $this->expectException(AccessRightsException::class);
+
+        putenv("COMPRESSED_FILES_FOLDER=tests/compress/unaccessable");
+
         new SearchFiles();
     }
 }
