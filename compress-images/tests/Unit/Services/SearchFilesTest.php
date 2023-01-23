@@ -12,20 +12,20 @@ class SearchFilesTest extends TestCase
      */
     public function tearDownEnvironmentChanges()
     {
-        putenv("SEARCH_FILE_FOLDER=" . env('SEARCH_FILE_FOLDER'));
+        putenv("SEARCH_FILES_FOLDER=" . env('SEARCH_FILES_FOLDER'));
         putenv("COMPRESSED_FILES_FOLDER=" . env('COMPRESSED_FILES_FOLDER'));
     }
 
     /**
-     * Test if missing environment variable SEARCH_FILE_FOLDER throws exception
+     * Test if missing environment variable SEARCH_FILES_FOLDER throws exception
      *
      * @return void
      */
-    public function test_missing_search_file_folder_env()
+    public function test_missing_search_files_folder_env()
     {
         $this->expectException(\Exception::class);
 
-        putenv("SEARCH_FILE_FOLDER=");
+        putenv("SEARCH_FILES_FOLDER=");
 
         new SearchFiles();
     }
