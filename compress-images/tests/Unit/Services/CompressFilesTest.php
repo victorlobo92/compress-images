@@ -19,4 +19,15 @@ class CompressFilesTest extends TestCase
 
         $this->assertInstanceOf(CompressFilesInterface::class, $compressFiles);
     }
+
+    /**
+     * Test if CompressFiles has attribute files_to_compress
+     *
+     * @return void
+     */
+    public function test_class_has_attributes()
+    {
+        $this->assertClassHasAttribute('files_to_compress', CompressFiles::class);
+        $this->assertClassHasAttribute('files_compressed', CompressFiles::class);
+    }
 }
