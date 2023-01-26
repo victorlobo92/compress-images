@@ -11,7 +11,6 @@ class SearchFiles {
 
     private $compress_folder_path;
     private $search_files_folder;
-    private $compressed_files_folder;
 
     public function __construct()
     {
@@ -25,17 +24,11 @@ class SearchFiles {
 
         $this->compress_folder_path = $compress_folder_path ? $compress_folder_path : base_path();
         $this->search_files_folder = trim(getenv('SEARCH_FILES_FOLDER'), '/');
-        $this->compressed_files_folder = trim(getenv('COMPRESSED_FILES_FOLDER'), '/');
     }
 
     private function get_search_files_folder()
     {
         return $this->compress_folder_path . '/' . $this->search_files_folder;
-    }
-
-    private function get_compressed_files_folder()
-    {
-        return $this->compress_folder_path . '/' . $this->compressed_files_folder;
     }
 
     private function validate()
@@ -50,10 +43,6 @@ class SearchFiles {
         if(empty(getenv('SEARCH_FILES_FOLDER'))) {
             throw new MissingEnvironmentVariableException('Envirionment variable SEARCH_FILES_FOLDER is missing!');
         }
-
-        if(empty(getenv('COMPRESSED_FILES_FOLDER'))) {
-            throw new MissingEnvironmentVariableException('Envirionment variable COMPRESSED_FILES_FOLDER is missing!');
-        }
     }
 
     private function validate_folders_exist()
@@ -61,20 +50,12 @@ class SearchFiles {
         if(!is_dir($this->get_search_files_folder())) {
             throw new FileOrFolderNotFoundException('The folder ' . $this->get_search_files_folder() . ' was not found!');
         }
-
-        if(!is_dir($this->get_compressed_files_folder())) {
-            throw new FileOrFolderNotFoundException('The folder ' . $this->get_compressed_files_folder() . ' was not found!');
-        }
     }
 
     private function validate_folders_access_rights()
     {
         if(!is_readable($this->get_search_files_folder())) {
             throw new AccessRightsException('The application does not have reading access rights to ' . $this->get_search_files_folder() . ' folder!');
-        }
-
-        if(!is_writable($this->get_compressed_files_folder())) {
-            throw new AccessRightsException('The application does not have writing access rights to ' . $this->get_compressed_files_folder() . ' folder!');
         }
     }
 

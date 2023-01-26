@@ -35,20 +35,6 @@ class SearchFilesTest extends TestCase
     }
 
     /**
-     * Test if missing environment variable COMPRESSED_FILES_FOLDER throws exception
-     *
-     * @return void
-     */
-    public function test_missing_compressed_files_folder_env()
-    {
-        $this->expectException(MissingEnvironmentVariableException::class);
-
-        putenv("COMPRESSED_FILES_FOLDER=");
-        
-        new SearchFiles();
-    }
-
-    /**
      * Test if exception is thrown when SEARCH_FILES_FOLDER directory does not exists
      *
      * @return void
@@ -63,20 +49,6 @@ class SearchFilesTest extends TestCase
     }
 
     /**
-     * Test if exception is thrown when COMPRESSED_FILES_FOLDER directory does not exists
-     *
-     * @return void
-     */
-    public function test_compressed_folder_exists_exception()
-    {
-        $this->expectException(FileOrFolderNotFoundException::class);
-
-        putenv("COMPRESSED_FILES_FOLDER=fake_folder");
-        
-        new SearchFiles();
-    }
-
-    /**
      * Test if application has SEARCH_FILES_FOLDER reading access rights
      *
      * @return void
@@ -86,20 +58,6 @@ class SearchFilesTest extends TestCase
         $this->expectException(AccessRightsException::class);
 
         putenv("SEARCH_FILES_FOLDER=tests/compress/unaccessable");
-
-        new SearchFiles();
-    }
-
-    /**
-     * Test if application has COMPRESSED_FILES_FOLDER writing access rights
-     *
-     * @return void
-     */
-    public function test_writing_access_rights_to_compressed_folder()
-    {
-        $this->expectException(AccessRightsException::class);
-
-        putenv("COMPRESSED_FILES_FOLDER=tests/compress/unaccessable");
 
         new SearchFiles();
     }
