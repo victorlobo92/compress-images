@@ -173,4 +173,31 @@ class CompressFilesTest extends TestCase
         $compress_files = new CompressFiles($compress_png_mock, $file_to_compress);
         $compress_files->compress();
     }
+
+    /**
+     * Test exception is thrown when file format is not supported by the compressor
+     *
+     * @return void
+     */
+    public function test_exception_thrown_if_file_format_is_not_supported()
+    {
+        $compress_png_mock = $this->createMock(CompressPNG::class);
+
+        $search_file_folder = $this->get_base_path() . '/' . trim(getenv('SEARCH_FILES_FOLDER'), '/');
+        
+        $file_to_compress = [
+            [
+                'folder' => "$search_file_folder/accessable/",
+                'name' => 'unsupported_format.txt',
+            ]
+        ];
+
+        $file_path = $file_to_compress[0]['folder'] . $file_to_compress[0]['name'];
+
+        $this->expectException(Exception::class);
+        $this->expectExceptionMessage("The image '$file_path' is not supported!");
+
+        $compress_files = new CompressFiles($compress_png_mock, $file_to_compress);
+        $compress_files->compress();
+    }
 }

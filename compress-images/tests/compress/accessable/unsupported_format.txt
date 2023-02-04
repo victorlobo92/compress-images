@@ -1,0 +1,1 @@
+This is just a file not supported by the compressor to test if the exception is working fine!

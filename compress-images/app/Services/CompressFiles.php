@@ -10,6 +10,8 @@ use Exception;
 
 class CompressFiles
 {
+    const ARRAY_IMG_MIME_TYPES = array('image/jpeg', 'image/pjpeg', 'image/png', 'image/x-png', 'image/gif', 'image/webp');
+
     private CompressInterface $compressPNG;
     private $compress_folder_path;
     private string $compressed_files_folder;
@@ -100,6 +102,10 @@ class CompressFiles
 
             $image_data = getimagesize($file['path']);
 
+            if (!$image_data || !in_array($image_data['mime'], self::ARRAY_IMG_MIME_TYPES)) {
+                throw new Exception("The image '{$file['path']}' is not supported!");
+            }
+            
             $file['mime'] = $image_data['mime'];
             $file['size'] = filesize($file['path']);
         } catch (Exception $e) {
