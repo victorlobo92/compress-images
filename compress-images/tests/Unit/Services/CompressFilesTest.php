@@ -6,12 +6,22 @@ use App\Exceptions\AccessRightsException;
 use App\Exceptions\FileOrFolderNotFoundException;
 use App\Exceptions\MissingEnvironmentVariableException;
 use App\Services\Compress\CompressInterface;
+use App\Services\Compress\CompressPNG;
 use App\Services\CompressFiles;
 use Tests\TestCase;
 
 class CompressFilesTest extends TestCase
 {
     private $compress_mock;
+
+    private function get_base_path()
+    {
+        $base_path = trim(getenv('COMPRESS_FOLDER_PATH'), '/');
+
+        if (!$base_path) $base_path = base_path();
+
+        return $base_path;
+    }
 
     /**
      * @before
@@ -80,5 +90,59 @@ class CompressFilesTest extends TestCase
     {
         $this->assertClassHasAttribute('files_to_compress', CompressFiles::class);
         $this->assertClassHasAttribute('files_compressed', CompressFiles::class);
+    }
+
+    /**
+     * Test compress method is called for PNG file
+     *
+     * @return void
+     */
+    public function test_compress_method_is_called_for_png_file()
+    {
+        $compress_png_mock = $this->createMock(CompressPNG::class);
+
+        $compress_png_mock->method('setup')->willReturn($compress_png_mock);
+
+        $search_file_folder = $this->get_base_path() . '/' . trim(getenv('SEARCH_FILES_FOLDER'), '/');
+        $compressed_file_folder = $this->get_base_path() . '/' . trim(getenv('COMPRESSED_FILES_FOLDER'), '/') . '/';
+        
+        $file_to_compress = [
+            [
+                'folder' => "$search_file_folder/accessable/",
+                'name' => 'dog.jpg',
+            ],
+            [
+                'folder' => "$search_file_folder/accessable/",
+                'name' => 'dog.png',
+            ],
+            [
+                'folder' => "$search_file_folder/accessable/",
+                'name' => 'dog_2.png',
+            ],
+        ];
+
+        $first_file = array_merge($file_to_compress[1], [
+            'path' => $file_to_compress[1]['folder'] . $file_to_compress[1]['name'],
+            'mime' => 'image/png',
+            'size' => filesize($file_to_compress[1]['folder'] . $file_to_compress[1]['name'],)
+        ]);
+
+        $second_file = array_merge($file_to_compress[2], [
+            'path' => $file_to_compress[2]['folder'] . $file_to_compress[2]['name'],
+            'mime' => 'image/png',
+            'size' => filesize($file_to_compress[2]['folder'] . $file_to_compress[2]['name'])
+        ]);
+
+        $compress_png_mock->expects($this->exactly(2))
+            ->method('setup')
+            ->withConsecutive(
+                [$first_file, $compressed_file_folder],
+                [$second_file, $compressed_file_folder]
+            );
+
+        $compress_png_mock->expects($this->exactly(2))->method('compress');
+
+        $compress_files = new CompressFiles($compress_png_mock, $file_to_compress);
+        $compress_files->compress();
     }
 }

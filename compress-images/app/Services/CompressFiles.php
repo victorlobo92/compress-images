@@ -5,15 +5,20 @@ namespace App\Services;
 use App\Exceptions\AccessRightsException;
 use App\Exceptions\FileOrFolderNotFoundException;
 use App\Exceptions\MissingEnvironmentVariableException;
+use App\Services\Compress\CompressInterface;
+use Exception;
+
 class CompressFiles
 {
+    private CompressInterface $compressPNG;
     private $compress_folder_path;
     private string $compressed_files_folder;
     private array $files_to_compress;
     private array $files_compressed = [];
 
-    public function __construct(array $files_to_compress)
+    public function __construct(CompressInterface $compressPNG, array $files_to_compress)
     {
+        $this->compressPNG = $compressPNG;
         $this->files_to_compress = $files_to_compress;
         $this->setup();
         $this->validate();
@@ -64,8 +69,39 @@ class CompressFiles
      *
      * @return void
      */
-    public function compress_files(): array
+    public function compress(): array
     {
+        foreach ($this->files_to_compress as $file) {
+            $error = $this->validate_file($file);
+
+            if (!is_null($error)) throw new Exception($error);
+
+            switch ($file['mime']) {
+                case 'image/png':
+                case 'image/x-png':
+                    $this->files_compressed[] = $this->compressPNG
+                        ->setup($file, $this->get_compressed_files_path())
+                        ->compress();
+                    break;
+            }
+        }
+
         return $this->files_compressed;
+    }
+
+    private function validate_file(&$file)
+    {
+        $file['path'] = $file['folder'] . $file['name'];
+
+        try {
+            $image_data = getimagesize($file['path']);
+
+            $file['mime'] = $image_data['mime'];
+            $file['size'] = filesize($file['path']);
+        } catch (Exception $e) {
+            return $e->getMessage();
+        }
+
+        return null;
     }
 }
