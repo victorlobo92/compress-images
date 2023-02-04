@@ -8,7 +8,8 @@
         "hot": "mix watch --hot",
         "prod": "npm run production",
         "production": "mix --production",
-        "test": "php artisan test --env=testing --testsuite=Unit --stop-on-failure"
+        "test": "php artisan test --env=testing --testsuite=Unit --stop-on-failure",
+        "testf": "npm run test -- --filter"
     },
     "devDependencies": {
         "axios": "^0.21",
