@@ -8,6 +8,7 @@ use App\Exceptions\MissingEnvironmentVariableException;
 use App\Services\Compress\CompressInterface;
 use App\Services\Compress\CompressPNG;
 use App\Services\CompressFiles;
+use Exception;
 use Tests\TestCase;
 
 class CompressFilesTest extends TestCase
@@ -141,6 +142,33 @@ class CompressFilesTest extends TestCase
             );
 
         $compress_png_mock->expects($this->exactly(2))->method('compress');
+
+        $compress_files = new CompressFiles($compress_png_mock, $file_to_compress);
+        $compress_files->compress();
+    }
+
+    /**
+     * Test exception is thrown when file to compress is missing
+     *
+     * @return void
+     */
+    public function test_exception_thrown_if_file_is_missing()
+    {
+        $compress_png_mock = $this->createMock(CompressPNG::class);
+
+        $search_file_folder = $this->get_base_path() . '/' . trim(getenv('SEARCH_FILES_FOLDER'), '/');
+        
+        $file_to_compress = [
+            [
+                'folder' => "$search_file_folder/accessable/",
+                'name' => 'fake_file',
+            ]
+        ];
+
+        $file_path = $file_to_compress[0]['folder'] . $file_to_compress[0]['name'];
+
+        $this->expectException(Exception::class);
+        $this->expectExceptionMessage("The image on path '$file_path' is missing!");
 
         $compress_files = new CompressFiles($compress_png_mock, $file_to_compress);
         $compress_files->compress();

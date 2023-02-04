@@ -94,6 +94,10 @@ class CompressFiles
         $file['path'] = $file['folder'] . $file['name'];
 
         try {
+            if (empty($file['path']) || !file_exists($file['path'])) {
+                throw new Exception("The image on path '{$file['path']}' is missing!");
+            }
+
             $image_data = getimagesize($file['path']);
 
             $file['mime'] = $image_data['mime'];
