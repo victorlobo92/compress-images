@@ -114,4 +114,29 @@ class CompressTest extends TestCase
 
         $this->assertTrue(is_dir($compressed_files_folder));
     }
+
+    /**
+     * compress_file method has been called
+     *
+     * @return void
+     */
+    public function test_compress_file_method_has_been_called()
+    {
+        $search_file_folder = $this->get_base_path() . '/' . trim(getenv('SEARCH_FILES_FOLDER'), '/');
+        
+        $file_to_compress = [
+            'folder' => "$search_file_folder/accessable/",
+            'name' => 'dog_2.png',
+        ];
+
+        $file_to_compress['path'] = $file_to_compress['folder'] . $file_to_compress['name'];
+
+        $compressed_files_folder = trim(getenv('COMPRESSED_FILES_FOLDER'), '/') . '/';
+        
+        $compressMock = $this->createPartialMock(Compress::class, ['validate', 'make_dir_if_needed', 'compress_file']);
+        $compressMock->expects($this->once())->method('compress_file');
+
+        $compressMock->setup($file_to_compress, $compressed_files_folder);
+        $compressMock->compress();
+    }
 }

@@ -31,6 +31,15 @@ abstract class Compress implements CompressInterface
     {
         $this->make_dir_if_needed($this->get_file_destination_folder());
 
+        try {
+            $temp_file_path = $this->get_file_destination_temp_folder() . hash_file('md5', $this->file['path']) . $this->file['name'];
+
+            $this->compress_file($temp_file_path);
+        }
+        catch (Exception $e) {
+            return $e->getMessage();
+        }
+
         return $this->get_file_destination_path();
     }
 
@@ -45,6 +54,16 @@ abstract class Compress implements CompressInterface
         if(!is_dir($dir)) {
             mkdir($dir, 0755, true);
         }
+    }
+
+    /**
+     * Compress single file
+     * 
+     * @param string $temp_file_path Temporary file path
+     * @return string Path of compressed file
+     */
+    protected function compress_file($temp_file_path)
+    {
     }
 
     private function get_file_destination_folder()
@@ -62,5 +81,10 @@ abstract class Compress implements CompressInterface
     protected function get_file_destination_path()
     {
         return $this->get_file_destination_folder() . $this->file['name'];
+    }
+
+    private function get_file_destination_temp_folder()
+    {
+        return $this->file_destination_folder . 'temp/';
     }
 }
