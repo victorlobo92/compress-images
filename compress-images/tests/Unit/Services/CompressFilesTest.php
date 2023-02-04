@@ -38,6 +38,7 @@ class CompressFilesTest extends TestCase
     public function tear_down_environment_changes()
     {
         putenv("COMPRESSED_FILES_FOLDER=" . env('COMPRESSED_FILES_FOLDER'));
+        putenv("MAX_FILE_SIZE_MB=" . env('MAX_FILE_SIZE_MB'));
     }
 
     /**
@@ -215,11 +216,12 @@ class CompressFilesTest extends TestCase
         $file_to_compress = [
             [
                 'folder' => "$search_file_folder/accessable/",
-                'name' => 'heavy_image.jpeg',
+                'name' => 'dog.png',
             ]
         ];
 
-        $max_file_size_mb = getenv('MAX_FILE_SIZE_MB') ?: 10;
+        putenv('MAX_FILE_SIZE_MB=0.1');
+        $max_file_size_mb = getenv('MAX_FILE_SIZE_MB');
 
         $this->expectException(Exception::class);
         $this->expectExceptionMessage("Please send a imagem smaller than {$max_file_size_mb}mb!");
