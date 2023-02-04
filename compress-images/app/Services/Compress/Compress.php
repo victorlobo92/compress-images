@@ -64,6 +64,7 @@ abstract class Compress implements CompressInterface
      */
     protected function compress_file($temp_file_path)
     {
+        throw new Exception("Method 'compress_file' not implemented for class '" . get_class($this) . "'!");
     }
 
     private function get_file_destination_folder()

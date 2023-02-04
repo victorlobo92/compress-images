@@ -139,4 +139,29 @@ class CompressTest extends TestCase
         $compressMock->setup($file_to_compress, $compressed_files_folder);
         $compressMock->compress();
     }
+
+    /**
+     * compress_file method must be overwritten
+     *
+     * @return void
+     */
+    public function test_compress_file_method_must_be_overwritten()
+    {
+        $search_file_folder = $this->get_base_path() . '/' . trim(getenv('SEARCH_FILES_FOLDER'), '/');
+        
+        $file_to_compress = [
+            'folder' => "$search_file_folder/accessable/",
+            'name' => 'dog_2.png',
+        ];
+
+        $file_to_compress['path'] = $file_to_compress['folder'] . $file_to_compress['name'];
+
+        $compressed_files_folder = trim(getenv('COMPRESSED_FILES_FOLDER'), '/') . '/';
+        
+        $compressMock = $this->createPartialMock(Compress::class, ['validate', 'make_dir_if_needed']);
+        $compressMock->setup($file_to_compress, $compressed_files_folder);
+        
+        $expected_message = "Method 'compress_file' not implemented for class '" . get_class($compressMock) . "'!";
+        $this->assertEquals($expected_message, $compressMock->compress());
+    }
 }
