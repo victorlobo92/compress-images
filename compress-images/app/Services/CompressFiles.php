@@ -2,7 +2,7 @@
 
 namespace App\Services;
 
-class CompressFiles implements CompressFilesInterface
+class CompressFiles
 {
     private array $files_to_compress;
     private array $files_compressed = [];
