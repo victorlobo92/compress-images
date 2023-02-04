@@ -35,4 +35,16 @@ class CompressTest extends TestCase
 
         $compressMock->setup([], '');
     }
+
+    /**
+     * Test if method setup calls validate method
+     *
+     * @return void
+     */
+    public function test_if_setup_calls_validate_method()
+    {
+        $compressMock = $this->createPartialMock(Compress::class, ['validate']);
+        $compressMock->expects($this->once())->method('validate');
+        $compressMock->setup([], '');
+    }
 }
