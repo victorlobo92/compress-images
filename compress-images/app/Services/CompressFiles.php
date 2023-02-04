@@ -66,6 +66,14 @@ class CompressFiles
     {
         return $this->compress_folder_path . $this->compressed_files_folder;
     }
+
+    private function get_max_size()
+    {
+        $max_file_size_mb = getenv('MAX_FILE_SIZE_MB') ?: 10;
+
+        return $max_file_size_mb * 1024 * 1024;
+    }
+
     /**
      * Compress files
      *
@@ -108,6 +116,12 @@ class CompressFiles
             
             $file['mime'] = $image_data['mime'];
             $file['size'] = filesize($file['path']);
+
+            if ($file['size'] >= $this->get_max_size()) {
+                $max_size_str = $this->get_max_size() / 1024 / 1024;
+
+                throw new Exception("Please send a imagem smaller than {$max_size_str}mb!");
+            }
         } catch (Exception $e) {
             return $e->getMessage();
         }

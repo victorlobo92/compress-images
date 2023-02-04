@@ -200,4 +200,31 @@ class CompressFilesTest extends TestCase
         $compress_files = new CompressFiles($compress_png_mock, $file_to_compress);
         $compress_files->compress();
     }
+
+    /**
+     * Test exception is thrown when file is bigger then max file size
+     *
+     * @return void
+     */
+    public function test_exception_thrown_if_file_is_too_big()
+    {
+        $compress_png_mock = $this->createMock(CompressPNG::class);
+
+        $search_file_folder = $this->get_base_path() . '/' . trim(getenv('SEARCH_FILES_FOLDER'), '/');
+        
+        $file_to_compress = [
+            [
+                'folder' => "$search_file_folder/accessable/",
+                'name' => 'heavy_image.jpeg',
+            ]
+        ];
+
+        $max_file_size_mb = getenv('MAX_FILE_SIZE_MB') ?: 10;
+
+        $this->expectException(Exception::class);
+        $this->expectExceptionMessage("Please send a imagem smaller than {$max_file_size_mb}mb!");
+
+        $compress_files = new CompressFiles($compress_png_mock, $file_to_compress);
+        $compress_files->compress();
+    }
 }
