@@ -90,6 +90,6 @@ class SearchFilesTest extends TestCase
         $searchFiles = new SearchFiles();
         $files_list = $searchFiles->find();
 
-        $this->assertCount(4, $files_list);
+        $this->assertCount(5, $files_list);
     }
 }
