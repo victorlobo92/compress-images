@@ -164,4 +164,31 @@ class CompressTest extends TestCase
         $expected_message = "Method 'compress_file' not implemented for class '" . get_class($compressMock) . "'!";
         $this->assertEquals($expected_message, $compressMock->compress());
     }
+
+    /**
+     * compression_worked method has been called
+     *
+     * @return void
+     */
+    public function test_compression_worked_method_has_been_called()
+    {
+        $search_file_folder = $this->get_base_path() . '/' . trim(getenv('SEARCH_FILES_FOLDER'), '/');
+        
+        $file_to_compress = [
+            'folder' => "$search_file_folder/accessable/",
+            'name' => 'dog_2.png',
+        ];
+
+        $file_to_compress['path'] = $file_to_compress['folder'] . $file_to_compress['name'];
+
+        $compressed_files_folder = trim(getenv('COMPRESSED_FILES_FOLDER'), '/') . '/';
+        
+        $compressMock = $this->createPartialMock(Compress::class, ['validate', 'make_dir_if_needed', 'compress_file', 'compression_worked']);
+        $compressMock->expects($this->once())->method('compression_worked');
+        
+        $compressMock->setup($file_to_compress, $compressed_files_folder);
+
+        $expected_message = 'File compression resulted in a bigger file';
+        $this->assertEquals($expected_message, $compressMock->compress());
+    }
 }

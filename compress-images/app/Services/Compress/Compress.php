@@ -35,6 +35,16 @@ abstract class Compress implements CompressInterface
             $temp_file_path = $this->get_file_destination_temp_folder() . hash_file('md5', $this->file['path']) . $this->file['name'];
 
             $this->compress_file($temp_file_path);
+
+            if ($this->compression_worked($this->file['path'], $temp_file_path)) {
+            }
+            else {
+                try {
+                    unlink($temp_file_path);
+                } catch(Exception $e) {}
+
+                throw new Exception('File compression resulted in a bigger file');
+            }
         }
         catch (Exception $e) {
             return $e->getMessage();
@@ -65,6 +75,18 @@ abstract class Compress implements CompressInterface
     protected function compress_file($temp_file_path)
     {
         throw new Exception("Method 'compress_file' not implemented for class '" . get_class($this) . "'!");
+    }
+
+    /**
+     * Check if compression worked verifying if original file is bigger than the compressed file
+     *
+     * @param string $original Original file path
+     * @param string $compressed Compressed file path
+     * @return bool
+     */
+    protected function compression_worked(string $original, string $compressed): bool
+    {
+        return filesize($original) > filesize($compressed);
     }
 
     private function get_file_destination_folder()
