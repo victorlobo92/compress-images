@@ -191,4 +191,33 @@ class CompressTest extends TestCase
         $expected_message = 'File compression resulted in a bigger file';
         $this->assertEquals($expected_message, $compressMock->compress());
     }
+
+    /**
+     * Temporary file is moved to compressed folder on success
+     *
+     * @return void
+     */
+    public function test_temp_file_is_moved_to_compressed_folder()
+    {
+        $search_file_folder = $this->get_base_path() . '/' . trim(getenv('SEARCH_FILES_FOLDER'), '/');
+        
+        $file_to_compress = [
+            'folder' => "$search_file_folder/accessable/",
+            'name' => 'dog_2.png',
+        ];
+
+        $file_to_compress['path'] = $file_to_compress['folder'] . $file_to_compress['name'];
+        
+        $compressed_files_folder = trim(getenv('COMPRESSED_FILES_FOLDER'), '/') . '/';
+
+        $file_destination_path = $compressed_files_folder . 'accessable/dog_2.png';
+
+        $compressMock = $this->createPartialMock(Compress::class, ['validate', 'make_dir_if_needed', 'compress_file', 'compression_worked']);
+        $compressMock->method('compression_worked')
+            ->willReturn(true);
+
+        $compressMock->setup($file_to_compress, $compressed_files_folder);
+
+        $this->assertEquals($file_destination_path, $compressMock->compress());
+    }
 }

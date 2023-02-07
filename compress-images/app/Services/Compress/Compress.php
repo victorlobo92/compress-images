@@ -37,6 +37,9 @@ abstract class Compress implements CompressInterface
             $this->compress_file($temp_file_path);
 
             if ($this->compression_worked($this->file['path'], $temp_file_path)) {
+                try {
+                    rename($temp_file_path, $this->get_file_destination_path());
+                } catch(Exception $e) {}
             }
             else {
                 try {
