@@ -22,4 +22,16 @@ class CompressPNGTest extends TestCase
 
         $this->assertInstanceOf(CompressInterface::class, $compress);
     }
+
+    /**
+     * Don't throw exception when instanciated
+     *
+     * @return void
+     */
+    public function test_no_exception_when_instanciating()
+    {
+        $this->expectNotToPerformAssertions();
+
+        new CompressPNG();
+    }
 }
